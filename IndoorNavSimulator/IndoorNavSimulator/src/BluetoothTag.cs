@@ -15,6 +15,10 @@ namespace IndoorNavSimulator
         void DeviceLeft(Point Origo);
     }
 
+    /// <summary>
+    /// Egy, az adott helymeghatározó eszköztől való távolságot reprezentáló objektum
+    /// Az Origo a referenciapont (bluetooth tag) helyzete, a DistanceFromTag pedig a távolsága a telefontól
+    /// </summary>
     class DeviceDistance
     {
         public DeviceDistance(Point Origo, double DistanceFromTag)
@@ -46,6 +50,11 @@ namespace IndoorNavSimulator
             DeviceDistance dist = obj as DeviceDistance;
             if (dist == null) return false;
             return this.Origo.X == dist.Origo.X && this.Origo.Y == dist.Origo.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -82,6 +91,7 @@ namespace IndoorNavSimulator
         private Canvas background;
         private bool hasDevice;
         private ContactEventHandler contactEventHandler;
+        private Label label_distance;
 
         private static SolidColorBrush blue, gray, black, purple;
         private static double tagDiameter;
@@ -99,6 +109,7 @@ namespace IndoorNavSimulator
             zoneDistance = new Ellipse();
             deviceDistance = new Ellipse();
             radius = new Line();
+            label_distance = new Label();
 
             //deviceDistance.Visibility = Visibility.Hidden;
 
@@ -116,18 +127,24 @@ namespace IndoorNavSimulator
 
             background.Children.Add(tagDisplay);
             background.Children.Add(zoneDistance);
-
+            background.Children.Add(label_distance);
+            
+            label_distance.Foreground = new SolidColorBrush(Colors.Red);
+            label_distance.FontSize = 9;
 
             Canvas.SetLeft(tagDisplay, origo.X - tagDiameter / 2);
             Canvas.SetTop(tagDisplay, origo.Y - tagDiameter / 2);
             Canvas.SetLeft(zoneDistance, origo.X - zoneRadius);
             Canvas.SetTop(zoneDistance, origo.Y - zoneRadius);
+            Canvas.SetLeft(label_distance, origo.X + tagDiameter / 2);
+            Canvas.SetTop(label_distance, origo.Y - tagDiameter);
         }
 
 
         public double DeviceMotion(Point DevicePosition)
         {
             double distanceFromTag = LocationCalculator.Distance(origo, DevicePosition);
+            label_distance.Content = Math.Round(distanceFromTag, 2);
             if (distanceFromTag > zoneRadius)
             {
                 if (hasDevice)

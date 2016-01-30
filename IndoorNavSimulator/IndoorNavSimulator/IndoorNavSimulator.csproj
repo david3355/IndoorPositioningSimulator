@@ -57,7 +57,15 @@
     </ApplicationDefinition>
     <Compile Include="src\BluetoothTag.cs" />
     <Compile Include="src\Device.cs" />
-    <Compile Include="src\LocationCalculator.cs" />
+    <Compile Include="src\locationcalc\locationcalc_stratagies\AverageLocationCalculator.cs" />
+    <Compile Include="src\locationcalc\locationcalc_stratagies\CalculatorStrategy.cs" />
+    <Compile Include="src\locationcalc\locationcalc_stratagies\ClosestDistanceLocationCalculator.cs" />
+    <Compile Include="src\locationcalc\commonpoint_strategies\CommonPointStrategy.cs" />
+    <Compile Include="src\locationcalc\commonpoint_strategies\InspectAllPointsStrategy.cs" />
+    <Compile Include="src\locationcalc\commonpoint_strategies\InspectTwoIntersectionStrategy.cs" />
+    <Compile Include="src\locationcalc\Intersection.cs" />
+    <Compile Include="src\locationcalc\LocationCalculator.cs" />
+    <Compile Include="src\locationcalc\LocationResult.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

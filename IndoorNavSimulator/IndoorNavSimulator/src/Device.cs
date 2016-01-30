@@ -111,6 +111,7 @@ namespace IndoorNavSimulator
         }
 
         private Precision precision;
+        
 
         public Precision Precision
         {
@@ -125,7 +126,7 @@ namespace IndoorNavSimulator
             deviceDisplay.Stroke = red;
             deviceDisplay.StrokeThickness = 2;
             deviceDisplay.Fill = red;
-            deviceDisplay.Fill.Opacity = 0.3;
+            deviceDisplay.Fill.Opacity = 0.3;            
         }
 
         public void SetSimulationDisplay(Precision Precision, Point Origo, double Radius = -1)

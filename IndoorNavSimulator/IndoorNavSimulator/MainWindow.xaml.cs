@@ -30,6 +30,44 @@ namespace IndoorNavSimulator
         private List<DeviceDistance> deviceDistances;
         private RealDevice realDev;
         private SimulatedDevice simDev;
+        private CalculatorStrategy calculator_strategy;
+
+        /// <summary>
+        /// TESZT
+        /// </summary>
+        private void Test2()
+        {
+            Point p1 = new Point(4, 4);
+            Point p2 = new Point(7, 7);
+            Point p3 = new Point(4,10);
+            double r1, r2, r3;
+            r1 = r2 = r3 = 3;
+            Intersection i1 = new Intersection(p1, r1, p2, r2);
+            Intersection i2 = new Intersection(p1, r1, p3, r3);
+            Intersection i3 = new Intersection(p3, r3, p2, r2);
+            Intersection[] intersections = { i1, i2, i3 };
+            CommonPointStrategy commonPointStrategy = new InspectTwoIntersectionStrategy();
+            LocationResult lr = new LocationResult(commonPointStrategy.CommonPointOfIntersections(new List<Intersection>(intersections)), Precision.ThreeOrMoreTag);
+        }
+
+        private void Test()
+        {
+            Point p1 = new Point(13, 9);
+            Point p2 = new Point(27, 8);
+            Point p3 = new Point(28, 22);
+            double r1, r2, r3;
+            r1 = 9.8;
+            r2 = 7;
+            r3 = 10.8;
+            Intersection i1 = new Intersection(p1, r1, p2, r2);
+            Intersection i2 = new Intersection(p1, r1, p3, r3);
+            Intersection i3 = new Intersection(p3, r3, p2, r2);
+            i3 = null;
+            Intersection[] intersections = { i1, i2, i3 };
+            CommonPointStrategy commonPointStrategy = new InspectTwoIntersectionStrategy();
+            Point p = commonPointStrategy.CommonPointOfIntersections(new List<Intersection>(intersections));
+            MessageBox.Show(p.ToString());
+        }
 
         private void Init()
         {
@@ -37,6 +75,9 @@ namespace IndoorNavSimulator
             deviceDistances = new List<DeviceDistance>();
             realDev = new RealDevice(backgr);
             simDev = new SimulatedDevice(backgr);
+            CommonPointStrategy inspect_two_point_strategy = new InspectTwoIntersectionStrategy();
+            calculator_strategy = new ClosestDistanceLocationCalculator(inspect_two_point_strategy);
+            //closestdistance_strategy = new AverageLocationCalculator();   // EZ A RÉGI VERZIÓ, AMI JÓL MŰKÖDIK
             SetDefaultBackground();
         }
 
@@ -62,7 +103,8 @@ namespace IndoorNavSimulator
                 if (dd != null) dd.SetDistance(d);
             }
 
-            LocationResult result = LocationCalculator.CalculateCommonPoint(deviceDistances);
+            
+            LocationResult result = LocationCalculator.CalculateCommonPoint(deviceDistances, null, calculator_strategy);
             if (result.Precision != Precision.NoTag)
             {
                 switch (result.Precision)
@@ -118,6 +160,12 @@ namespace IndoorNavSimulator
         {
             int index = deviceDistances.FindIndex(p => p.Origo.Equals(Origo));
             deviceDistances.RemoveAt(index);
+        }
+
+        private void backgr_KeyDown(object sender, KeyEventArgs e)
+        {
+            MouseEventArgs me = new MouseEventArgs(Mouse.PrimaryDevice, 10000);
+            backgr_MouseMove(this, me);
         }
 
 
