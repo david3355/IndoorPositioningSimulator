@@ -55,8 +55,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="src\BluetoothTag.cs" />
-    <Compile Include="src\Device.cs" />
+    <Compile Include="Options.xaml.cs">
+      <DependentUpon>Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\devices\BluetoothTag.cs" />
+    <Compile Include="src\devices\ContactEventHandler.cs" />
+    <Compile Include="src\devices\Device.cs" />
+    <Compile Include="src\devices\DeviceDistance.cs" />
+    <Compile Include="src\devices\RealDevice.cs" />
+    <Compile Include="src\devices\SimulatedDevice.cs" />
     <Compile Include="src\locationcalc\locationcalc_stratagies\AverageLocationCalculator.cs" />
     <Compile Include="src\locationcalc\locationcalc_stratagies\CalculatorStrategy.cs" />
     <Compile Include="src\locationcalc\locationcalc_stratagies\ClosestDistanceLocationCalculator.cs" />
@@ -66,6 +73,7 @@
     <Compile Include="src\locationcalc\Intersection.cs" />
     <Compile Include="src\locationcalc\LocationCalculator.cs" />
     <Compile Include="src\locationcalc\LocationResult.cs" />
+    <Compile Include="src\OptionChangeEventHandler.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,6 +86,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

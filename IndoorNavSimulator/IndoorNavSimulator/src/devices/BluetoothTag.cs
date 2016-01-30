@@ -9,55 +9,7 @@ using System.Windows;
 
 namespace IndoorNavSimulator
 {
-    interface ContactEventHandler
-    {
-        void DeviceAppear(Point Origo, double Distance);
-        void DeviceLeft(Point Origo);
-    }
-
-    /// <summary>
-    /// Egy, az adott helymeghatározó eszköztől való távolságot reprezentáló objektum
-    /// Az Origo a referenciapont (bluetooth tag) helyzete, a DistanceFromTag pedig a távolsága a telefontól
-    /// </summary>
-    class DeviceDistance
-    {
-        public DeviceDistance(Point Origo, double DistanceFromTag)
-        {
-            origo = Origo;
-            distanceFromTag = DistanceFromTag;
-        }
-
-        private Point origo;
-        private double distanceFromTag;
-
-        public Point Origo
-        {
-            get { return origo; }
-        }
-
-        public double DistanceFromTag
-        {
-            get { return distanceFromTag; }
-        }
-
-        public void SetDistance(double NewDistance)
-        {
-            distanceFromTag = NewDistance;
-        }
-
-        public override bool Equals(object obj)
-        {
-            DeviceDistance dist = obj as DeviceDistance;
-            if (dist == null) return false;
-            return this.Origo.X == dist.Origo.X && this.Origo.Y == dist.Origo.Y;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-    }
+    public enum View { Visible, Invisible }
 
     class BluetoothTag
     {
@@ -81,12 +33,12 @@ namespace IndoorNavSimulator
             gray = new SolidColorBrush(Colors.LightBlue);
             black = new SolidColorBrush(Colors.Black);
             purple = new SolidColorBrush(Colors.Purple);
-            tagDiameter = 20;
+            tagDiameter = 10;
         }
 
         private Point origo;
         private Ellipse tagDisplay, zoneDistance, deviceDistance;
-        private Line radius;
+        private Line line_radius;
         private double zoneRadius;
         private Canvas background;
         private bool hasDevice;
@@ -108,7 +60,7 @@ namespace IndoorNavSimulator
             tagDisplay = new Ellipse();
             zoneDistance = new Ellipse();
             deviceDistance = new Ellipse();
-            radius = new Line();
+            line_radius = new Line();
             label_distance = new Label();
 
             //deviceDistance.Visibility = Visibility.Hidden;
@@ -116,7 +68,7 @@ namespace IndoorNavSimulator
             tagDisplay.Stroke = blue;
             zoneDistance.Stroke = gray;
             deviceDistance.Stroke = black;
-            radius.Stroke = purple;
+            line_radius.Stroke = purple;
 
             tagDisplay.Width = tagDiameter;
             tagDisplay.Height = tagDiameter;
@@ -138,8 +90,39 @@ namespace IndoorNavSimulator
             Canvas.SetTop(zoneDistance, origo.Y - zoneRadius);
             Canvas.SetLeft(label_distance, origo.X + tagDiameter / 2);
             Canvas.SetTop(label_distance, origo.Y - tagDiameter);
+            Canvas.SetZIndex(tagDisplay, 0);
         }
 
+        public void SetMaximumDistanceScopeVisibility(View View)
+        {
+            SetVisibility(zoneDistance, View);
+        }
+
+        public void SetDistanceScopeVisibility(View View)
+        {
+            SetVisibility(deviceDistance, View);
+        }
+
+        public void SetDistanceLineVisibility(View View)
+        {
+            SetVisibility(line_radius, View);
+        }
+
+        public void SetDistanceLabelVisibility(View View)
+        {
+            SetVisibility(label_distance, View);
+        }
+
+        private void SetVisibility(UIElement Element, View View)
+        {
+            switch (View)
+            {
+                case View.Visible: Element.Visibility = Visibility.Visible;
+                    break;
+                case View.Invisible: Element.Visibility = Visibility.Hidden;
+                    break;
+            }
+        }
 
         public double DeviceMotion(Point DevicePosition)
         {
@@ -150,7 +133,7 @@ namespace IndoorNavSimulator
                 if (hasDevice)
                 {
                     background.Children.Remove(deviceDistance);
-                    background.Children.Remove(radius);
+                    background.Children.Remove(line_radius);
                     hasDevice = false;
                     contactEventHandler.DeviceLeft(origo);
                 }
@@ -158,7 +141,7 @@ namespace IndoorNavSimulator
             else if (!hasDevice)
             {
                 background.Children.Add(deviceDistance);
-                background.Children.Add(radius);
+                background.Children.Add(line_radius);
                 hasDevice = true;
                 contactEventHandler.DeviceAppear(origo, distanceFromTag);
             }
@@ -166,10 +149,10 @@ namespace IndoorNavSimulator
             Canvas.SetTop(deviceDistance, origo.Y - distanceFromTag);
             deviceDistance.Width = distanceFromTag * 2;
             deviceDistance.Height = distanceFromTag * 2;
-            radius.X1 = origo.X;
-            radius.Y1 = origo.Y;
-            radius.X2 = DevicePosition.X;
-            radius.Y2 = DevicePosition.Y;
+            line_radius.X1 = origo.X;
+            line_radius.Y1 = origo.Y;
+            line_radius.X2 = DevicePosition.X;
+            line_radius.Y2 = DevicePosition.Y;
 
             return distanceFromTag;
         }
