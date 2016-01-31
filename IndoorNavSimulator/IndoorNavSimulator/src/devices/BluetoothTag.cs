@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace IndoorNavSimulator
 {
-    public enum View { Visible, Invisible }
+    public enum ViewOption { Visible, Invisible }
 
     class BluetoothTag
     {
@@ -80,8 +80,8 @@ namespace IndoorNavSimulator
             background.Children.Add(tagDisplay);
             background.Children.Add(zoneDistance);
             background.Children.Add(label_distance);
-            
-            label_distance.Foreground = new SolidColorBrush(Colors.Red);
+
+            label_distance.Foreground = blue;
             label_distance.FontSize = 9;
 
             Canvas.SetLeft(tagDisplay, origo.X - tagDiameter / 2);
@@ -93,33 +93,33 @@ namespace IndoorNavSimulator
             Canvas.SetZIndex(tagDisplay, 0);
         }
 
-        public void SetMaximumDistanceScopeVisibility(View View)
+        public void SetMaximumDistanceScopeVisibility(ViewOption View)
         {
             SetVisibility(zoneDistance, View);
         }
 
-        public void SetDistanceScopeVisibility(View View)
+        public void SetDistanceScopeVisibility(ViewOption View)
         {
             SetVisibility(deviceDistance, View);
         }
 
-        public void SetDistanceLineVisibility(View View)
+        public void SetDistanceLineVisibility(ViewOption View)
         {
             SetVisibility(line_radius, View);
         }
 
-        public void SetDistanceLabelVisibility(View View)
+        public void SetDistanceLabelVisibility(ViewOption View)
         {
             SetVisibility(label_distance, View);
         }
 
-        private void SetVisibility(UIElement Element, View View)
+        private void SetVisibility(UIElement Element, ViewOption View)
         {
             switch (View)
             {
-                case View.Visible: Element.Visibility = Visibility.Visible;
+                case ViewOption.Visible: Element.Visibility = Visibility.Visible;
                     break;
-                case View.Invisible: Element.Visibility = Visibility.Hidden;
+                case ViewOption.Invisible: Element.Visibility = Visibility.Hidden;
                     break;
             }
         }

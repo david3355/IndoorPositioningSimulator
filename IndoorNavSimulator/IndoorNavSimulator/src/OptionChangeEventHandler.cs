@@ -7,9 +7,11 @@ namespace IndoorNavSimulator
 {
     public interface OptionChangeEventHandler
     {
-        void TagMaximumScopeVisibilityChange(View View);
-        void TagDistanceScopeVisibilityChange(View View);
-        void TagDistanceLineVisibilityChange(View View);
-        void TagDistanceLabelVisibilityChange(View View);
+        void TagMaximumScopeVisibilityChange(ViewOption View);
+        void TagDistanceScopeVisibilityChange(ViewOption View);
+        void TagDistanceLineVisibilityChange(ViewOption View);
+        void TagDistanceLabelVisibilityChange(ViewOption View);
+        void RealDevicePositionVisibilityChange(ViewOption View);
+        void SimulatedDevicePositionVisibilityChange(ViewOption View);
     }
 }

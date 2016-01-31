@@ -16,8 +16,7 @@ namespace IndoorNavSimulator
         }
 
         private Precision precision;
-
-
+        
         public Precision Precision
         {
             get { return precision; }
@@ -25,7 +24,11 @@ namespace IndoorNavSimulator
 
         protected override void Init()
         {
+            label_devicepos.Foreground = red.Clone();   // Még az előtt kell klónozni, hogy az opacity-t beállítanánk!
+            label_devicepos.FontSize = 9;
+            background.Children.Add(label_devicepos);
             deviceDisplay.Visibility = Visibility.Hidden;
+            label_devicepos.Visibility = Visibility.Hidden;
             radius = commonRadius;
             ApplyRadius();
             deviceDisplay.Stroke = red;
@@ -61,6 +64,12 @@ namespace IndoorNavSimulator
             }
 
             ApplyRadius();
+
+            label_devicepos.Content = String.Format("({0} ; {1})", Math.Round(Origo.X, 2), Math.Round(Origo.Y, 2));
+            Canvas.SetLeft(label_devicepos, Origo.X + 10);
+            Canvas.SetTop(label_devicepos, Origo.Y - 20);
         }
+
+        
     }
 }

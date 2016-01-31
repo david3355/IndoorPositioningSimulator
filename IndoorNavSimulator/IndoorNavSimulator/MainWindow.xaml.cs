@@ -40,7 +40,7 @@ namespace IndoorNavSimulator
             simDev = new SimulatedDevice(backgr);
             CommonPointStrategy inspect_two_point_strategy = new InspectTwoIntersectionStrategy();
             calculator_strategy = new ClosestDistanceLocationCalculator(inspect_two_point_strategy);
-            //closestdistance_strategy = new AverageLocationCalculator();   // EZ A RÉGI VERZIÓ, AMI JÓL MŰKÖDIK
+            //closestdistance_strategy = new AverageLocationCalculator();   // EZ A RÉGI VERZIÓ
             SetDefaultBackground();
         }
 
@@ -53,16 +53,77 @@ namespace IndoorNavSimulator
             backgr.Background = ib;
         }
 
-        #region EventHandlers
+        public void DeviceAppear(Point Origo, double Distance)
+        {
+            DeviceDistance dist = new DeviceDistance(Origo, Distance);
+            deviceDistances.Add(dist);
+        }
+
+        public void DeviceLeft(Point Origo)
+        {
+            int index = deviceDistances.FindIndex(p => p.Origo.Equals(Origo));
+            deviceDistances.RemoveAt(index);
+        }
+
+
+        #region Option change handlers
+
+        public void TagMaximumScopeVisibilityChange(ViewOption View)
+        {
+            foreach (BluetoothTag tag in tags)
+            {
+                tag.SetMaximumDistanceScopeVisibility(View);
+            }
+        }
+
+        public void TagDistanceScopeVisibilityChange(ViewOption View)
+        {
+            foreach (BluetoothTag tag in tags)
+            {
+                tag.SetDistanceScopeVisibility(View);
+            }
+        }
+
+        public void TagDistanceLineVisibilityChange(ViewOption View)
+        {
+            foreach (BluetoothTag tag in tags)
+            {
+                tag.SetDistanceLineVisibility(View);
+            }
+        }
+
+        public void TagDistanceLabelVisibilityChange(ViewOption View)
+        {
+            foreach (BluetoothTag tag in tags)
+            {
+                tag.SetDistanceLabelVisibility(View);
+            }
+        }
+
+        public void RealDevicePositionVisibilityChange(ViewOption View)
+        {
+            realDev.SetPositionLabelVisibility(View);
+        }
+
+        public void SimulatedDevicePositionVisibilityChange(ViewOption View)
+        {
+            simDev.SetPositionLabelVisibility(View);
+        }
+
+        #endregion
+
+        #region Event Handlers
 
         private void backgr_MouseMove(object sender, MouseEventArgs e)
         {
-            realDev.MoveDevice(e.GetPosition(backgr));
+            Point mousepos = e.GetPosition(backgr);
+            if (mousepos.X < 0 || mousepos.Y < 0) return;
+            realDev.MoveDevice(mousepos);
             double d;
             DeviceDistance dd;
             foreach (BluetoothTag tag in tags)
             {
-                d = tag.DeviceMotion(e.GetPosition(backgr));
+                d = tag.DeviceMotion(mousepos);
                 dd = deviceDistances.Find(ddist => ddist.Origo.Equals(tag.Origo));
                 if (dd != null) dd.SetDistance(d);
             }
@@ -112,57 +173,15 @@ namespace IndoorNavSimulator
             }
         }
 
-        #endregion
-
-        public void DeviceAppear(Point Origo, double Distance)
-        {
-            DeviceDistance dist = new DeviceDistance(Origo, Distance);
-            deviceDistances.Add(dist);
-        }
-
-        public void DeviceLeft(Point Origo)
-        {
-            int index = deviceDistances.FindIndex(p => p.Origo.Equals(Origo));
-            deviceDistances.RemoveAt(index);
-        }
-
         private void sim_settings_Click(object sender, RoutedEventArgs e)
         {
             Options opt = new Options(this);
             opt.Show();
         }
+       
+        #endregion
 
 
-        public void TagMaximumScopeVisibilityChange(View View)
-        {
-            foreach (BluetoothTag tag in tags)
-            {
-                tag.SetMaximumDistanceScopeVisibility(View);
-            }
-        }
-
-        public void TagDistanceScopeVisibilityChange(View View)
-        {
-            foreach (BluetoothTag tag in tags)
-            {
-                tag.SetDistanceScopeVisibility(View);
-            }
-        }
-
-        public void TagDistanceLineVisibilityChange(View View)
-        {
-            foreach (BluetoothTag tag in tags)
-            {
-                tag.SetDistanceLineVisibility(View);
-            }
-        }
-
-        public void TagDistanceLabelVisibilityChange(View View)
-        {
-            foreach (BluetoothTag tag in tags)
-            {
-                tag.SetDistanceLabelVisibility(View);
-            }
-        }
+        
     }
 }

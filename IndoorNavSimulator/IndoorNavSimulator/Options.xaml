@@ -5,16 +5,57 @@
     <Grid>
         <TabControl>
             <TabItem Header="Visibility">
-                <GroupBox Header="Items">
-                    <StackPanel>
-                        <CheckBox Name="check_maximumscope" IsChecked="True" Margin="5" Checked="check_maximumscope_Change" Unchecked="check_maximumscope_Change" >Tag maximum distance scope</CheckBox>
-                        <CheckBox Name="check_distancescope" IsChecked="True" Margin="5" Checked="check_distancescope_Checked" Unchecked="check_distancescope_Checked" >Tag distance scope</CheckBox>
-                        <CheckBox Name="check_distanceline" IsChecked="True" Margin="5" Checked="check_distanceline_Checked" Unchecked="check_distanceline_Checked" >Tag distance line</CheckBox>
-                        <CheckBox Name="check_distancelabel" IsChecked="True" Margin="5" Checked="check_distancelabel_Checked" Unchecked="check_distancelabel_Checked" >Tag distance label</CheckBox>
-                    </StackPanel>
-                </GroupBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <GroupBox Header="Bluetooth items" Grid.Column="0" Margin="2">
+                        <StackPanel>
+                            <CheckBox Name="check_maximumscope" IsChecked="True" Margin="5" Checked="check_maximumscope_Change" Unchecked="check_maximumscope_Change" >Tag maximum distance scope</CheckBox>
+                            <CheckBox Name="check_distancescope" IsChecked="True" Margin="5" Checked="check_distancescope_Checked" Unchecked="check_distancescope_Checked" >Tag distance scope</CheckBox>
+                            <CheckBox Name="check_distanceline" IsChecked="True" Margin="5" Checked="check_distanceline_Checked" Unchecked="check_distanceline_Checked" >Tag distance line</CheckBox>
+                            <CheckBox Name="check_distancelabel" IsChecked="True" Margin="5" Checked="check_distancelabel_Checked" Unchecked="check_distancelabel_Checked" >Tag distance label</CheckBox>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Device items" Grid.Column="1" Margin="2">
+                        <StackPanel>
+                            <CheckBox Name="check_devicepos" IsChecked="True" Margin="5" Checked="check_devicepos_Checked" Unchecked="check_devicepos_Checked" >Real device position</CheckBox>
+                            <CheckBox Name="check_simulated_devicepos" IsChecked="True" Margin="5" Checked="check_simulated_devicepos_Checked" Unchecked="check_simulated_devicepos_Checked" >Simulated device position</CheckBox>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+                
             </TabItem>
-            <TabItem Header="Calculation"></TabItem>
+            <TabItem Header="Simulation data">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <Label Grid.Column="0" Grid.Row="0">Bluetooth tag maximum range:</Label>
+                    <TextBox Name="text_maxrange" Grid.Column="1" Grid.Row="0" Margin="3" Background="AliceBlue"> </TextBox>
+                    <Label Grid.Column="2" Grid.Row="0" ToolTip="meter">(m)</Label>
+
+                    <Label Grid.Column="0" Grid.Row="1">Discovery period:</Label>
+                    <Label Grid.Column="0" Grid.Row="2">RSSI Variance:</Label>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Calculation methods"></TabItem>
         </TabControl>
     </Grid>
 </Window>

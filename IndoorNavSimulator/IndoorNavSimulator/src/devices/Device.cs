@@ -28,6 +28,8 @@ namespace IndoorNavSimulator
         protected Point origo;
         protected double radius;
         protected const double commonRadius = 12;
+        protected Label label_devicepos;
+        protected ViewOption labelVisibility;
 
         protected static SolidColorBrush red, green;
 
@@ -42,6 +44,8 @@ namespace IndoorNavSimulator
         {
             origo = new Point(100, 100);
             deviceDisplay = new Ellipse();
+            label_devicepos = new Label();
+            labelVisibility = ViewOption.Visible;
             Init();
             Display();
         }
@@ -60,13 +64,32 @@ namespace IndoorNavSimulator
         public void Hide()
         {
             if (this.deviceDisplay.Visibility != Visibility.Hidden)
+            {
                 this.deviceDisplay.Visibility = Visibility.Hidden;
+                this.label_devicepos.Visibility = Visibility.Hidden;
+            }
         }
 
         public void Visible()
         {
             if (this.deviceDisplay.Visibility != Visibility.Visible)
+            {
                 this.deviceDisplay.Visibility = Visibility.Visible;
+                if (labelVisibility == ViewOption.Visible) this.label_devicepos.Visibility = Visibility.Visible;
+            }
+        }
+
+        public void SetPositionLabelVisibility(ViewOption View)
+        {
+            labelVisibility = View;
+            switch (View)
+            {
+                case ViewOption.Visible:
+                    label_devicepos.Visibility = Visibility.Visible;
+                    break;
+                case ViewOption.Invisible: label_devicepos.Visibility = Visibility.Hidden;
+                    break;
+            }
         }
 
         public void MoveDevice(Point Center)
@@ -75,6 +98,12 @@ namespace IndoorNavSimulator
             origo = Center;
             Canvas.SetLeft(deviceDisplay, origo.X - radius);
             Canvas.SetTop(deviceDisplay, origo.Y - radius);
+            AdditionalMoving(Center);
+        }
+
+        protected virtual void AdditionalMoving(Point Center)
+        {
+            // Hook
         }
 
         public void SetRadius(int Radius)

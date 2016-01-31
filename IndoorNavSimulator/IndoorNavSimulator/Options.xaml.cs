@@ -30,32 +30,48 @@ namespace IndoorNavSimulator
         {
             if (eventHandler == null) return;
             CheckBox checkbox = sender as CheckBox;
-            if (checkbox.IsChecked == true) eventHandler.TagMaximumScopeVisibilityChange(View.Visible);
-            else eventHandler.TagMaximumScopeVisibilityChange(View.Invisible);
+            if (checkbox.IsChecked == true) eventHandler.TagMaximumScopeVisibilityChange(ViewOption.Visible);
+            else eventHandler.TagMaximumScopeVisibilityChange(ViewOption.Invisible);
         }
 
         private void check_distancescope_Checked(object sender, RoutedEventArgs e)
         {
             if (eventHandler == null) return;
             CheckBox checkbox = sender as CheckBox;
-            if (checkbox.IsChecked == true) eventHandler.TagDistanceScopeVisibilityChange(View.Visible);
-            else eventHandler.TagDistanceScopeVisibilityChange(View.Invisible);
+            if (checkbox.IsChecked == true) eventHandler.TagDistanceScopeVisibilityChange(ViewOption.Visible);
+            else eventHandler.TagDistanceScopeVisibilityChange(ViewOption.Invisible);
         }
 
         private void check_distanceline_Checked(object sender, RoutedEventArgs e)
         {
             if (eventHandler == null) return;
             CheckBox checkbox = sender as CheckBox;
-            if (checkbox.IsChecked == true) eventHandler.TagDistanceLineVisibilityChange(View.Visible);
-            else eventHandler.TagDistanceLineVisibilityChange(View.Invisible);
+            if (checkbox.IsChecked == true) eventHandler.TagDistanceLineVisibilityChange(ViewOption.Visible);
+            else eventHandler.TagDistanceLineVisibilityChange(ViewOption.Invisible);
         }
 
         private void check_distancelabel_Checked(object sender, RoutedEventArgs e)
         {
             if (eventHandler == null) return;
             CheckBox checkbox = sender as CheckBox;
-            if (checkbox.IsChecked == true) eventHandler.TagDistanceLabelVisibilityChange(View.Visible);
-            else eventHandler.TagDistanceLabelVisibilityChange(View.Invisible);
+            if (checkbox.IsChecked == true) eventHandler.TagDistanceLabelVisibilityChange(ViewOption.Visible);
+            else eventHandler.TagDistanceLabelVisibilityChange(ViewOption.Invisible);
+        }
+
+        private void check_devicepos_Checked(object sender, RoutedEventArgs e)
+        {
+            if (eventHandler == null) return;
+            CheckBox checkbox = sender as CheckBox;
+            if (checkbox.IsChecked == true) eventHandler.RealDevicePositionVisibilityChange(ViewOption.Visible);
+            else eventHandler.RealDevicePositionVisibilityChange(ViewOption.Invisible);
+        }
+
+        private void check_simulated_devicepos_Checked(object sender, RoutedEventArgs e)
+        {
+            if (eventHandler == null) return;
+            CheckBox checkbox = sender as CheckBox;
+            if (checkbox.IsChecked == true) eventHandler.SimulatedDevicePositionVisibilityChange(ViewOption.Visible);
+            else eventHandler.SimulatedDevicePositionVisibilityChange(ViewOption.Invisible);
         }
 
     }

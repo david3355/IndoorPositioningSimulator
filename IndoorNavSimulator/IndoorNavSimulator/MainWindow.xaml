@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Indoor navigation simulator" Height="650" Width="1025"  >
     <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top" >
+        <StackPanel DockPanel.Dock="Top" Panel.ZIndex="1" Background="AliceBlue">
+        <Menu  Panel.ZIndex="1">
             <MenuItem Header="Simulator">
                 <MenuItem Name="mi_setbackground" Header="Set background" Click="mi_setbackground_Click"></MenuItem>
             </MenuItem>
@@ -12,10 +13,11 @@
                 <MenuItem Header="Simulator settings" Name="sim_settings" Click="sim_settings_Click"></MenuItem>
             </MenuItem>
         </Menu>
-        <ToolBar DockPanel.Dock="Top" Height="30"></ToolBar>
+        <ToolBar Height="30"></ToolBar>
+        </StackPanel>
         <Grid>
             <DockPanel LastChildFill="True">
-                <Canvas Name="backgr" Background="AliceBlue" MouseMove="backgr_MouseMove" MouseRightButtonDown="backgr_MouseRightButtonDown" MouseLeftButtonDown="backgr_MouseLeftButtonDown"></Canvas>
+                <Canvas Name="backgr" Background="AliceBlue" MouseMove="backgr_MouseMove" MouseRightButtonDown="backgr_MouseRightButtonDown" MouseLeftButtonDown="backgr_MouseLeftButtonDown" ></Canvas>
             </DockPanel>
         </Grid>
     </DockPanel>
