@@ -58,7 +58,7 @@
     <Compile Include="Options.xaml.cs">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\devices\BluetoothTag.cs" />
+    <Compile Include="src\devices\BluetoothTagDisplay.cs" />
     <Compile Include="src\devices\ContactEventHandler.cs" />
     <Compile Include="src\devices\Device.cs" />
     <Compile Include="src\devices\DeviceDistance.cs" />
@@ -74,6 +74,10 @@
     <Compile Include="src\locationcalc\LocationCalculator.cs" />
     <Compile Include="src\locationcalc\LocationResult.cs" />
     <Compile Include="src\OptionChangeEventHandler.cs" />
+    <Compile Include="src\simulator\BeaconHandler.cs" />
+    <Compile Include="src\simulator\LocationEvents.cs" />
+    <Compile Include="src\simulator\Map.cs" />
+    <Compile Include="src\simulator\Simulator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

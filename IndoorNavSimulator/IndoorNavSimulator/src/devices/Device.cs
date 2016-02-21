@@ -59,6 +59,7 @@ namespace IndoorNavSimulator
         public void Display()
         {
             if (!background.Children.Contains(deviceDisplay)) background.Children.Add(deviceDisplay);
+            if (!background.Children.Contains(label_devicepos)) background.Children.Add(label_devicepos);
         }
 
         public void Hide()

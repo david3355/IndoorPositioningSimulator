@@ -11,9 +11,9 @@ namespace IndoorNavSimulator
 {
     public enum ViewOption { Visible, Invisible }
 
-    class BluetoothTag
+    class BluetoothTagDisplay
     {
-        public BluetoothTag(Canvas Background, Point CenterPosition, ContactEventHandler EventHandler, double ZoneRadius)
+        public BluetoothTagDisplay(Canvas Background, Point CenterPosition, ContactEventHandler EventHandler, double ZoneRadius)
         {
             zoneRadius = ZoneRadius;
             origo = CenterPosition;
@@ -22,12 +22,12 @@ namespace IndoorNavSimulator
             Init();
         }
 
-        public BluetoothTag(Canvas Background, Point CenterPosition, ContactEventHandler EventHandler)
+        public BluetoothTagDisplay(Canvas Background, Point CenterPosition, ContactEventHandler EventHandler)
             : this(Background, CenterPosition, EventHandler, DEFAULTZONERAD)
         {
         }
 
-        static BluetoothTag()
+        static BluetoothTagDisplay()
         {
             blue = new SolidColorBrush(Colors.Blue);
             gray = new SolidColorBrush(Colors.LightBlue);
@@ -47,7 +47,7 @@ namespace IndoorNavSimulator
 
         private static SolidColorBrush blue, gray, black, purple;
         private static double tagDiameter;
-        private const double DEFAULTZONERAD = 200;
+        private const double DEFAULTZONERAD = 400;
 
         public Point Origo
         {
