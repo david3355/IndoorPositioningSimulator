@@ -1,7 +1,7 @@
 ﻿<Window x:Class="IndoorNavSimulator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Indoor navigation simulator" Height="650" Width="1025"  >
+        Title="Indoor navigation simulator" Height="650" Width="1025" Closing="Window_Closing" >
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Panel.ZIndex="1" Background="AliceBlue">
         <Menu  Panel.ZIndex="1">

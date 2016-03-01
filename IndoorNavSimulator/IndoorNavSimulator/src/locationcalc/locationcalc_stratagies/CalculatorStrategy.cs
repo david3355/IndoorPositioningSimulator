@@ -8,7 +8,7 @@ namespace IndoorNavSimulator
 {
     abstract class CalculatorStrategy
     {
-        public LocationResult CalculateLocation(List<DeviceDistance> Distances, LocationResult LastLocation)
+        public LocationResult CalculateLocation(List<NearbyBluetoothTag> Distances, LocationResult LastLocation)
         {
             if (Distances.Count == 0) return new LocationResult(new Point(-1, -1), Precision.NoTag);
             if (Distances.Count == 1) return new LocationResult(Distances[0].Origo, Precision.OneTag, Distances[0].DistanceFromTag); // 1 vagy semennyi kör esetén nem tudunk pozíciót meghatározni
@@ -22,6 +22,6 @@ namespace IndoorNavSimulator
             return CalculateCommonPoint(Distances, LastLocation);
         }
 
-        protected abstract LocationResult CalculateCommonPoint(List<DeviceDistance> Distances, LocationResult LastLocation);
+        protected abstract LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation);
     }
 }

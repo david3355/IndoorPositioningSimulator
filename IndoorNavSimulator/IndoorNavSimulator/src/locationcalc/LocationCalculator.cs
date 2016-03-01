@@ -47,7 +47,7 @@ namespace IndoorNavSimulator
         /// <param name="Radiuses">A körök sugarai</param>
         /// <param name="CalculatorStrategy">Különféle stratégiák megadásával különféle módokon lehet pozíciót számolni</param>
         /// <returns>Azt a pontot adja vissza, ahol az összes kör metszi egymást</returns>
-        public static LocationResult CalculateCommonPoint(List<DeviceDistance> Distances, LocationResult LastLocation, CalculatorStrategy CalculatorStrategy)
+        public static LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation, CalculatorStrategy CalculatorStrategy)
         {
             return CalculatorStrategy.CalculateLocation(Distances, LastLocation);
         }

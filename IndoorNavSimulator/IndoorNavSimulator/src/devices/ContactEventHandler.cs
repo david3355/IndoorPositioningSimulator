@@ -8,7 +8,7 @@ namespace IndoorNavSimulator
 {
     interface ContactEventHandler
     {
-        void DeviceAppear(Point Origo, double Distance);
+        void DeviceAppear(Point Origo, double Distance, String MAC);
         void DeviceLeft(Point Origo);
     }
 }

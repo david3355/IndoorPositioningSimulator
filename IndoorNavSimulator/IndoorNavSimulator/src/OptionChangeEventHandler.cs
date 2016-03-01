@@ -13,5 +13,7 @@ namespace IndoorNavSimulator
         void TagDistanceLabelVisibilityChange(ViewOption View);
         void RealDevicePositionVisibilityChange(ViewOption View);
         void SimulatedDevicePositionVisibilityChange(ViewOption View);
+        void TagPredictedDistanceScopeVisibilityChange(ViewOption View);
+        void TagPredictionLabelVisibilityChange(ViewOption View);
     }
 }

@@ -15,11 +15,11 @@ namespace IndoorNavSimulator
 
         private CommonPointStrategy commonPointStrategy;
 
-        protected override LocationResult CalculateCommonPoint(List<DeviceDistance> Distances, LocationResult LastLocation)
+        protected override LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation)
         {
             // Válasszuk ki a 3 legkisebb távolságot:
-            List<DeviceDistance> distancesCopy = Distances.ToList<DeviceDistance>();
-            List<DeviceDistance> leastDistances = new List<DeviceDistance>();
+            List<NearbyBluetoothTag> distancesCopy = Distances.ToList<NearbyBluetoothTag>();
+            List<NearbyBluetoothTag> leastDistances = new List<NearbyBluetoothTag>();
             int mini;
             for (int k = 0; k < 3; k++)
             {
@@ -34,9 +34,9 @@ namespace IndoorNavSimulator
 
             List<Intersection> intersectionPoints = new List<Intersection>(); // ebben lesznek két-két kör metszéspontjai
 
-            DeviceDistance d0 = leastDistances[0];
-            DeviceDistance d1 = leastDistances[1];
-            DeviceDistance d2 = leastDistances[2];
+            NearbyBluetoothTag d0 = leastDistances[0];
+            NearbyBluetoothTag d1 = leastDistances[1];
+            NearbyBluetoothTag d2 = leastDistances[2];
 
             intersectionPoints.Add(Intersection.CalculateIntersection(d0.Origo, d0.DistanceFromTag, d1.Origo, d1.DistanceFromTag));
             intersectionPoints.Add(Intersection.CalculateIntersection(d0.Origo, d0.DistanceFromTag, d2.Origo, d2.DistanceFromTag));

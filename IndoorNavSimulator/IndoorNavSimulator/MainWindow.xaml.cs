@@ -30,8 +30,8 @@ namespace IndoorNavSimulator
 
         private void Init()
         {
-            simulator = new Simulator(backgr);
-            SetDefaultBackground();
+            simulator = new Simulator(backgr, this);
+            //SetDefaultBackground();
         }
 
         private void SetDefaultBackground()
@@ -82,6 +82,11 @@ namespace IndoorNavSimulator
         }
        
         #endregion
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            simulator.StopAllBeaconSending();
+        }
 
     }
 }

@@ -58,10 +58,11 @@
     <Compile Include="Options.xaml.cs">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
+    <Compile Include="src\devices\BeaconSender.cs" />
     <Compile Include="src\devices\BluetoothTagDisplay.cs" />
     <Compile Include="src\devices\ContactEventHandler.cs" />
-    <Compile Include="src\devices\Device.cs" />
-    <Compile Include="src\devices\DeviceDistance.cs" />
+    <Compile Include="src\devices\DeviceDisplay.cs" />
+    <Compile Include="src\devices\NearbyBluetoothTag.cs" />
     <Compile Include="src\devices\RealDevice.cs" />
     <Compile Include="src\devices\SimulatedDevice.cs" />
     <Compile Include="src\locationcalc\locationcalc_stratagies\AverageLocationCalculator.cs" />
@@ -74,10 +75,16 @@
     <Compile Include="src\locationcalc\LocationCalculator.cs" />
     <Compile Include="src\locationcalc\LocationResult.cs" />
     <Compile Include="src\OptionChangeEventHandler.cs" />
-    <Compile Include="src\simulator\BeaconHandler.cs" />
+    <Compile Include="src\OptionSave.cs" />
     <Compile Include="src\simulator\LocationEvents.cs" />
     <Compile Include="src\simulator\Map.cs" />
+    <Compile Include="src\simulator\measures\DistanceMeasureHelper.cs" />
+    <Compile Include="src\simulator\measures\MeasureDistance.cs" />
+    <Compile Include="src\simulator\measures\RssiMeasure.cs" />
+    <Compile Include="src\simulator\measures\RssiMeasureHelper.cs" />
     <Compile Include="src\simulator\Simulator.cs" />
+    <Compile Include="src\utility\MacGenerator.cs" />
+    <Compile Include="src\utility\NormalRandomGenerator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

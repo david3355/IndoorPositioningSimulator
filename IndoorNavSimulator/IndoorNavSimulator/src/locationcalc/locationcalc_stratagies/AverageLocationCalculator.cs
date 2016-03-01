@@ -8,7 +8,7 @@ namespace IndoorNavSimulator
 {
     class AverageLocationCalculator : CalculatorStrategy
     {
-        protected override LocationResult CalculateCommonPoint(List<DeviceDistance> Distances, LocationResult LastLocation)
+        protected override LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation)
         {
             List<Point> adjacentPoints = new List<Point>(); // ebben lesznek az egyes metszetek legközelebbi pontjai után kiválogatott szomszédos pontok
             List<Intersection> intersectionPoints = new List<Intersection>(); // ebben lesznek két-két kör metszéspontjai

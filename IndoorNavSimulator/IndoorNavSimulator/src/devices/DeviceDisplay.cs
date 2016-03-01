@@ -9,15 +9,15 @@ using System.Windows;
 
 namespace IndoorNavSimulator
 {
-    abstract class Device
+    abstract class DeviceDisplay
     {
-        public Device(Canvas Background)
+        public DeviceDisplay(Canvas Background)
         {
             background = Background;
             BaseInit();
         }
 
-        static Device()
+        static DeviceDisplay()
         {
             red = new SolidColorBrush(Colors.Red);
             green = new SolidColorBrush(Colors.Green);

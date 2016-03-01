@@ -74,5 +74,23 @@ namespace IndoorNavSimulator
             else eventHandler.SimulatedDevicePositionVisibilityChange(ViewOption.Invisible);
         }
 
+        private void check_predictedDistancescope_Checked(object sender, RoutedEventArgs e)
+        {
+            if (eventHandler == null) return;
+            CheckBox checkbox = sender as CheckBox;
+            if (checkbox.IsChecked != null) OptionSave.PredictedDistanceScopeVisible = (bool)checkbox.IsChecked;
+            if (checkbox.IsChecked == true) eventHandler.TagPredictedDistanceScopeVisibilityChange(ViewOption.Visible);
+            else eventHandler.TagPredictedDistanceScopeVisibilityChange(ViewOption.Invisible);
+        }
+
+        private void check_predictionlabel_Checked(object sender, RoutedEventArgs e)
+        {
+            if (eventHandler == null) return;
+            CheckBox checkbox = sender as CheckBox;
+            if (checkbox.IsChecked != null) OptionSave.PredictedLabelVisible = (bool)checkbox.IsChecked;
+            if (checkbox.IsChecked == true) eventHandler.TagPredictionLabelVisibilityChange(ViewOption.Visible);
+            else eventHandler.TagPredictionLabelVisibilityChange(ViewOption.Invisible);
+        }
+
     }
 }

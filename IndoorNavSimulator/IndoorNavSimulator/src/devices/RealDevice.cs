@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace IndoorNavSimulator
 {
-    class RealDevice : Device
+    class RealDevice : DeviceDisplay
     {
         public RealDevice(Canvas Background)
             : base(Background)
