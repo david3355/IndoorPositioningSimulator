@@ -25,16 +25,18 @@ namespace IndoorNavSimulator
         private RealDevice realDev;
         private SimulatedDevice simDev;
         private CalculatorStrategy calculator_strategy;
-        private DistanceMeasureHelper distanceMeasureHelper;
+        //private DistanceMeasureHelper distanceMeasureHelper;
+        private DistanceCalculator distcalc;
 
         private void InitSimulator()
         {
-            distanceMeasureHelper = DistanceMeasureHelper.GetInstance;
+            //distanceMeasureHelper = DistanceMeasureHelper.GetInstance;
+            distcalc = new PolyRegressionModelDistanceCalculator();
             tags = new List<BluetoothTagDisplay>();
             nearbyTags = new List<NearbyBluetoothTag>();
             realDev = new RealDevice(backgr);
             simDev = new SimulatedDevice(backgr);
-            CommonPointStrategy inspect_two_point_strategy = new InspectTwoIntersectionStrategy();
+            CommonPointStrategy inspect_two_point_strategy = new ClosestPointsStrategy();
             calculator_strategy = new ClosestDistanceLocationCalculator(inspect_two_point_strategy);
             //closestdistance_strategy = new AverageLocationCalculator();   // EZ A RÉGI VERZIÓ
         }
@@ -100,38 +102,69 @@ namespace IndoorNavSimulator
             {
                 d = tag.DeviceMotion(position);
                 dd = nearbyTags.Find(ddist => ddist.MAC.Equals(tag.MAC));
-                if (dd != null) dd.SetDistance(d);
+                if (dd != null) dd.SetExactDistance(d);
             }
 
-
+            /*
             LocationResult result = LocationCalculator.CalculateCommonPoint(nearbyTags, null, calculator_strategy);
-            if (result.Precision != Precision.NoTag)
+            DrawSimulatedPosition(result);
+             * */
+        }
+
+        public void BeaconReceived(NearbyBluetoothTag Sender, int RSSI)
+        {
+            /*
+            RssiMeasure rssi = distanceMeasureHelper.GetRSSI(RSSI);
+            double distance = rssi.DistanceAverage;
+
+            RssiMeasure avgrssi = distanceMeasureHelper.GetRSSI(AverageRSSI);
+            double avgdistance = avgrssi.DistanceAverage;
+            */
+            double distance = distcalc.GetDistanceByRSSI(RSSI);
+            double avgdistance = distcalc.GetDistanceByRSSI(Sender.AverageRSSI);
+            Sender.SetAveragePredictedDistance(avgdistance);
+
+            foreach (BluetoothTagDisplay tag in tags)
             {
-                switch (result.Precision)
+                if (tag.MAC.Equals(Sender.MAC))
                 {
-                    case Precision.OneTag: simDev.SetSimulationDisplay(Precision.OneTag, result.SimulatedLocation, result.Radius); break;
-                    case Precision.TwoTag: simDev.SetSimulationDisplay(Precision.TwoTag, result.SimulatedLocation, result.Radius); break;
-                    case Precision.ThreeOrMoreTag: simDev.SetSimulationDisplay(Precision.ThreeOrMoreTag, result.SimulatedLocation); break;
+                    tag.BeaconSent(RSSI, distance, Sender.AverageRSSI, avgdistance);
                 }
-                Point simulatedDevicePos = result.SimulatedLocation;
+            }
+                        
+            LocationResult location = PredictPosition();
+            mainWindow.Dispatcher.Invoke((Action)(() =>
+            {
+                DrawSimulatedPosition(location);
+            }));
+        }
+
+        private void DrawSimulatedPosition(LocationResult Position)
+        {
+            if (Position.Precision != Precision.NoTag)
+            {
+                switch (Position.Precision)
+                {
+                    case Precision.OneTag: simDev.SetSimulationDisplay(Precision.OneTag, Position.SimulatedLocation, Position.Radius); break;
+                    case Precision.TwoTag: simDev.SetSimulationDisplay(Precision.TwoTag, Position.SimulatedLocation, Position.Radius); break;
+                    case Precision.ThreeOrMoreTag: simDev.SetSimulationDisplay(Precision.ThreeOrMoreTag, Position.SimulatedLocation); break;
+                }
+                Point simulatedDevicePos = Position.SimulatedLocation;
                 simDev.MoveDevice(simulatedDevicePos);
             }
             else simDev.SetSimulationDisplay(Precision.NoTag, new Point(-1, -1));
         }
 
-        public void BeaconReceived(string MAC, int RSSI, double RealDistanceForTest)
+        private LocationResult PredictPosition()
         {
-            RssiMeasure rssi = distanceMeasureHelper.GetRSSI(RSSI);
-            double distance = rssi.DistanceAverage;
-
-            foreach (BluetoothTagDisplay tag in tags)
+            // Amíg a pozíciót számoljuk, ne lehessen megváltoztatni az average értékeket!
+            lock (nearbyTags)
             {
-                if (tag.MAC.Equals(MAC))
-                {
-                    tag.BeaconSent(RSSI, distance);
-                }
+                CommonPointStrategy cps = new ClosestPointsStrategy();  //InspectAllPointsStrategy ez mégsem jó
+                CalculatorStrategy calculator = new AverageClosestDistanceLocationCalculator(cps);
+                LocationResult location = calculator.CalculateLocation(nearbyTags, null);
+                return location;
             }
-            // TODO: Calculate position here!!!
         }
 
         #endregion
@@ -196,6 +229,60 @@ namespace IndoorNavSimulator
             }
         }
 
+        public void TagAveragePredictedDistanceScopeVisibilityChange(ViewOption View)
+        {
+            foreach (BluetoothTagDisplay tag in tags)
+            {
+                tag.SetAveragePredictedDistanceScopeVisibility(View);
+            }
+        }
+
+        public void TagAveragePredictionLabelVisibilityChange(ViewOption View)
+        {
+            foreach (BluetoothTagDisplay tag in tags)
+            {
+                tag.SetAveragePredictionLabelVisibility(View);
+            }
+        }
+
+        public void MaxRangeChanged(int NewValue)
+        {
+            foreach (BluetoothTagDisplay tag in tags)
+            {
+                tag.ZoneRadius = NewValue;
+            }
+        }
+
+        public void BeaconsendingIntervalMinimumChanged(int NewValue)
+        {
+            foreach (NearbyBluetoothTag tag in nearbyTags)
+            {
+                tag.SetBeaconSendingIntervalMinimum(NewValue);
+            }
+        }
+
+        public void BeaconsendingIntervalMaximumChanged(int NewValue)
+        {
+            foreach (NearbyBluetoothTag tag in nearbyTags)
+            {
+                tag.SetBeaconSendingIntervalMaximum(NewValue);
+            }
+        }
+
+        public void AveragingIntervalChanged(int NewValue)
+        {
+            foreach (NearbyBluetoothTag tag in nearbyTags)
+            {
+                tag.SetAveragingInterval(NewValue);
+            }
+        }
+
         #endregion
+
+
+
+
+
+
     }
 }

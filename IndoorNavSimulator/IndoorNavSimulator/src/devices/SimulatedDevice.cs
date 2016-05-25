@@ -24,7 +24,7 @@ namespace IndoorNavSimulator
 
         protected override void Init()
         {
-            label_devicepos.Foreground = red.Clone();   // Még az előtt kell klónozni, hogy az opacity-t beállítanánk!
+            label_devicepos.Foreground = red;
             label_devicepos.FontSize = 9;
             background.Children.Add(label_devicepos);
             deviceDisplay.Visibility = Visibility.Hidden;
@@ -32,9 +32,8 @@ namespace IndoorNavSimulator
             radius = commonRadius;
             ApplyRadius();
             deviceDisplay.Stroke = red;
-            deviceDisplay.StrokeThickness = 2;
-            deviceDisplay.Fill = red;
-            deviceDisplay.Fill.Opacity = 0.3;
+            deviceDisplay.StrokeThickness = 1;
+            deviceDisplay.Fill = opred;
             Canvas.SetZIndex(deviceDisplay, 5);
         }
 

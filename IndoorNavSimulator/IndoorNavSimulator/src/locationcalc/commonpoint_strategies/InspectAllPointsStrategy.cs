@@ -9,6 +9,8 @@ namespace IndoorNavSimulator
     class InspectAllPointsStrategy : CommonPointStrategy
     {
         /// <summary>
+        /// !!! Ez csak pontos esetben működik !!!
+        /// 
         /// Minden metszet minden pontját megvizsgáljuk, és az elsőhöz viszonyítjuk.
         /// Feltesszük, hogy minden metszet tartalmaz egy pontot, amely közös a többivel, így az első is.
         /// Ezért azt keressük, hogy az első metszet első, vagy második pontja a közös pont.

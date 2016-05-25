@@ -21,6 +21,8 @@ namespace IndoorNavSimulator
         {
             red = new SolidColorBrush(Colors.Red);
             green = new SolidColorBrush(Colors.Green);
+            opred = new SolidColorBrush(Colors.Red);
+            opred.Opacity = 0.3;
         }
 
         protected Ellipse deviceDisplay;
@@ -31,7 +33,7 @@ namespace IndoorNavSimulator
         protected Label label_devicepos;
         protected ViewOption labelVisibility;
 
-        protected static SolidColorBrush red, green;
+        public static SolidColorBrush red, opred, green;
 
         protected abstract void Init();
 

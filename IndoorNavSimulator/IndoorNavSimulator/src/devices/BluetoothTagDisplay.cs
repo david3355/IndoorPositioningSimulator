@@ -34,7 +34,7 @@ namespace IndoorNavSimulator
         static BluetoothTagDisplay()
         {
             blue = new SolidColorBrush(Colors.Blue);
-            gray = new SolidColorBrush(Colors.LightBlue);
+            lightBlue = new SolidColorBrush(Colors.LightBlue);
             black = new SolidColorBrush(Colors.Black);
             purple = new SolidColorBrush(Colors.Purple);
             orange = new SolidColorBrush(Colors.Orange);
@@ -44,20 +44,18 @@ namespace IndoorNavSimulator
         private Point origo;
         private String mac;
 
-        private Ellipse tagDisplay, zoneDistance, deviceDistance, predictedDistance;
+        private Ellipse tagDisplay, zoneDistance, deviceDistance, predictedDistance, avgPredictedDistance;
+        private Label label_distance, label_prediction, label_avg_prediction;
         private Line line_radius;
         private double zoneRadius;
         private Canvas background;
         private MainWindow mainWindow;
         private bool hasDevice;
         private ContactEventHandler contactEventHandler;
-        private Label label_distance, label_prediction;
 
-        private static SolidColorBrush blue, gray, black, purple, orange;
+        public static SolidColorBrush blue, lightBlue, black, purple, orange;
         private static double tagDiameter;
-        private const double DEFAULTZONERAD = 400;
-
-        private bool predScopeVisible, predLabelVisible;
+        private const double DEFAULTZONERAD = 500;
 
         public Point Origo
         {
@@ -71,23 +69,36 @@ namespace IndoorNavSimulator
 
         private void Init()
         {
-            predScopeVisible = predLabelVisible = true;
             hasDevice = false;
             tagDisplay = new Ellipse();
+
             zoneDistance = new Ellipse();
-            deviceDistance = new Ellipse();
-            predictedDistance = new Ellipse();
             line_radius = new Line();
+
+            deviceDistance = new Ellipse();
             label_distance = new Label();
+
+            predictedDistance = new Ellipse();
             label_prediction = new Label();
 
-            //deviceDistance.Visibility = Visibility.Hidden;
+            avgPredictedDistance = new Ellipse();
+            label_avg_prediction = new Label();
+
+            zoneDistance.Visibility = GetVisibilityValue(OptionSave.TagMaximumScopeVisible);
+            line_radius.Visibility = GetVisibilityValue(OptionSave.TagDistanceLineVisible);
+            deviceDistance.Visibility = GetVisibilityValue(OptionSave.TagDistanceScopeVisible);
+            label_distance.Visibility = GetVisibilityValue(OptionSave.TagDistanceLabelVisible);
+            predictedDistance.Visibility = GetVisibilityValue(OptionSave.TagPredictedDistanceScopeVisible);
+            label_prediction.Visibility = GetVisibilityValue(OptionSave.TagPredictionLabelVisible);
+            avgPredictedDistance.Visibility = GetVisibilityValue(OptionSave.TagAveragePredictedDistanceScopeVisible);
+            label_avg_prediction.Visibility = GetVisibilityValue(OptionSave.TagAveragePredictionLabelVisible);
 
             tagDisplay.Stroke = blue;
-            zoneDistance.Stroke = gray;
+            zoneDistance.Stroke = lightBlue;
+            line_radius.Stroke = purple;
             deviceDistance.Stroke = black;
             predictedDistance.Stroke = orange;
-            line_radius.Stroke = purple;
+            avgPredictedDistance.Stroke = blue;
 
             tagDisplay.Width = tagDiameter;
             tagDisplay.Height = tagDiameter;
@@ -96,16 +107,18 @@ namespace IndoorNavSimulator
             zoneDistance.Width = zoneRadius * 2;
             zoneDistance.Height = zoneRadius * 2;
 
-            background.Children.Add(tagDisplay);
-            background.Children.Add(zoneDistance);
-            background.Children.Add(label_distance);
-
-            label_distance.Foreground = blue;
+            label_distance.Foreground = black;
             label_distance.FontSize = 9;
             label_prediction.Foreground = orange;
             label_prediction.FontSize = 9;
+            label_avg_prediction.Foreground = blue;
+            label_avg_prediction.FontSize = 9;
 
             tagDisplay.ToolTip = mac;
+
+            background.Children.Add(tagDisplay);
+            background.Children.Add(zoneDistance);
+            background.Children.Add(label_distance);
 
             Canvas.SetLeft(tagDisplay, origo.X - tagDiameter / 2);
             Canvas.SetTop(tagDisplay, origo.Y - tagDiameter / 2);
@@ -115,7 +128,24 @@ namespace IndoorNavSimulator
             Canvas.SetTop(label_distance, origo.Y - tagDiameter);
             Canvas.SetLeft(label_prediction, origo.X + tagDiameter / 2);
             Canvas.SetTop(label_prediction, origo.Y - tagDiameter * 2);
+            Canvas.SetLeft(label_avg_prediction, origo.X + tagDiameter / 2);
+            Canvas.SetTop(label_avg_prediction, origo.Y + tagDiameter * 2);
             Canvas.SetZIndex(tagDisplay, 10);
+        }
+
+        public double ZoneRadius
+        {
+            get { return zoneRadius; }
+            set
+            {
+                if (value > 0) zoneRadius = value;
+                else throw new ArgumentException("Value must be greater than zero!");
+            }
+        }
+
+        private Visibility GetVisibilityValue(bool Visible)
+        {
+            return Visible ? Visibility.Visible : Visibility.Hidden;
         }
 
         public void SetMaximumDistanceScopeVisibility(ViewOption View)
@@ -148,6 +178,16 @@ namespace IndoorNavSimulator
             SetVisibility(predictedDistance, View);
         }
 
+        public void SetAveragePredictedDistanceScopeVisibility(ViewOption View)
+        {
+            SetVisibility(avgPredictedDistance, View);
+        }
+
+        public void SetAveragePredictionLabelVisibility(ViewOption View)
+        {
+            SetVisibility(label_avg_prediction, View);
+        }
+
         private void SetVisibility(UIElement Element, ViewOption View)
         {
             switch (View)
@@ -171,6 +211,8 @@ namespace IndoorNavSimulator
                     background.Children.Remove(line_radius);
                     background.Children.Remove(predictedDistance);
                     background.Children.Remove(label_prediction);
+                    background.Children.Remove(avgPredictedDistance);
+                    background.Children.Remove(label_avg_prediction);
                     hasDevice = false;
                     contactEventHandler.DeviceLeft(origo);
                 }
@@ -181,6 +223,8 @@ namespace IndoorNavSimulator
                 background.Children.Add(line_radius);
                 background.Children.Add(predictedDistance);
                 background.Children.Add(label_prediction);
+                background.Children.Add(avgPredictedDistance);
+                background.Children.Add(label_avg_prediction);
                 predictedDistance.Visibility = Visibility.Hidden;
                 label_prediction.Visibility = Visibility.Hidden;
                 hasDevice = true;
@@ -198,17 +242,22 @@ namespace IndoorNavSimulator
             return distanceFromTag;
         }
 
-        public void BeaconSent(int RSSI, double PredictedDistance)
+        public void BeaconSent(int RSSI, double PredictedDistance, int AvgRSSI, double PredictedAvgDistance)
         {
             mainWindow.Dispatcher.Invoke((Action)(() =>
             {
-                if (predictedDistance.Visibility == Visibility.Hidden && OptionSave.PredictedDistanceScopeVisible == true) predictedDistance.Visibility = Visibility.Visible;
-                if (label_prediction.Visibility == Visibility.Hidden && OptionSave.PredictedLabelVisible == true) label_prediction.Visibility = Visibility.Visible;
+                if (predictedDistance.Visibility == Visibility.Hidden && OptionSave.TagPredictedDistanceScopeVisible == true) predictedDistance.Visibility = Visibility.Visible;
+                if (label_prediction.Visibility == Visibility.Hidden && OptionSave.TagPredictionLabelVisible == true) label_prediction.Visibility = Visibility.Visible;
                 Canvas.SetLeft(predictedDistance, origo.X - PredictedDistance);
                 Canvas.SetTop(predictedDistance, origo.Y - PredictedDistance);
+                Canvas.SetLeft(avgPredictedDistance, origo.X - PredictedAvgDistance);
+                Canvas.SetTop(avgPredictedDistance, origo.Y - PredictedAvgDistance);
                 predictedDistance.Width = PredictedDistance * 2;
                 predictedDistance.Height = PredictedDistance * 2;
-                label_prediction.Content = String.Format("{0} ({1})", PredictedDistance, RSSI);
+                label_prediction.Content = String.Format("{0} ({1})", Math.Round(PredictedDistance, 2), RSSI);
+                avgPredictedDistance.Width = PredictedAvgDistance * 2;
+                avgPredictedDistance.Height = PredictedAvgDistance * 2;
+                label_avg_prediction.Content = String.Format("{0} ({1})", Math.Round(PredictedAvgDistance, 2), AvgRSSI);
             }));
         }
 

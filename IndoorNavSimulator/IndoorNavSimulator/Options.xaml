@@ -1,41 +1,91 @@
 ﻿<Window x:Class="IndoorNavSimulator.Options"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Options" Height="300" Width="500">
+        Title="Options" Height="400" Width="600" Icon="/img/settings.png" KeyDown="mainWindow_KeyDown" >
     <Grid>
         <TabControl>
-            <TabItem Header="Visibility">
+            <TabItem Name="tab_visibility" Header="Visibility"  >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    
+
                     <GroupBox Header="Bluetooth items" Grid.Column="0" Margin="2">
                         <StackPanel>
-                            <CheckBox Name="check_maximumscope" IsChecked="True" Margin="5" Checked="check_maximumscope_Change" Unchecked="check_maximumscope_Change" >Tag maximum distance scope</CheckBox>
-                            <CheckBox Name="check_distancescope" IsChecked="True" Margin="5" Checked="check_distancescope_Checked" Unchecked="check_distancescope_Checked" >Tag distance scope</CheckBox>
-                            <CheckBox Name="check_predictedDistancescope" IsChecked="True" Margin="5" Checked="check_predictedDistancescope_Checked" Unchecked="check_predictedDistancescope_Checked" >Tag predicted distance scope</CheckBox>
-                            <CheckBox Name="check_distanceline" IsChecked="True" Margin="5" Checked="check_distanceline_Checked" Unchecked="check_distanceline_Checked" >Tag distance line</CheckBox>
-                            <CheckBox Name="check_distancelabel" IsChecked="True" Margin="5" Checked="check_distancelabel_Checked" Unchecked="check_distancelabel_Checked" >Tag distance label</CheckBox>
-                            <CheckBox Name="check_predictionlabel" IsChecked="True" Margin="5" Checked="check_predictionlabel_Checked" Unchecked="check_predictionlabel_Checked" >Tag predicted distance label</CheckBox>
+                            <DockPanel>
+                                <CheckBox Name="check_maximumscope" IsChecked="True" Margin="5" Checked="check_maximumscope_Change" Unchecked="check_maximumscope_Change" >Tag maximum distance scope</CheckBox>
+                                <Ellipse Name="e_maximumscope" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                            </DockPanel>
+                            <DockPanel>
+                                <CheckBox Name="check_distanceline" IsChecked="True" Margin="5" Checked="check_distanceline_Checked" Unchecked="check_distanceline_Checked" >Tag distance line</CheckBox>
+                                <Ellipse Name="e_distanceline" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                            </DockPanel>
+                            
+                            <GroupBox Header="Accurate distance" Margin="2">
+                                <StackPanel>
+                                    <DockPanel>                                        
+                                        <CheckBox Name="check_distancescope" IsChecked="True" Margin="5" Checked="check_distancescope_Checked" Unchecked="check_distancescope_Checked" >Tag distance scope</CheckBox>
+                                        <Ellipse Name="e_distancescope" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <CheckBox Name="check_distancelabel" IsChecked="True" Margin="5" Checked="check_distancelabel_Checked" Unchecked="check_distancelabel_Checked" >Tag distance label</CheckBox>
+                                        <Ellipse Name="e_distancelabel" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                                    </DockPanel>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Predicted distance" Margin="2">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <CheckBox Name="check_predictedDistancescope" IsChecked="True" Margin="5" Checked="check_predictedDistancescope_Checked" Unchecked="check_predictedDistancescope_Checked" >Tag predicted distance scope</CheckBox>
+                                        <Ellipse Name="e_predictedDistancescope" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <CheckBox Name="check_predictionlabel" IsChecked="True" Margin="5" Checked="check_predictionlabel_Checked" Unchecked="check_predictionlabel_Checked" >Tag predicted distance label</CheckBox>
+                                        <Ellipse Name="e_predictionlabel" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                                    </DockPanel>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Average predicted distance" Margin="2">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <CheckBox Name="check_avgPredictedDistancescope" IsChecked="True" Margin="5" Checked="check_avgPredictedDistancescope_Checked" Unchecked="check_avgPredictedDistancescope_Checked" >Average predicted distance scope</CheckBox>
+                                        <Ellipse Name="e_avgPredictedDistancescope" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <CheckBox Name="check_avgPredictionlabel" IsChecked="True" Margin="5" Checked="check_avgPredictionlabel_Checked" Unchecked="check_avgPredictionlabel_Checked" >Average predicted distance label</CheckBox>
+                                        <Ellipse Name="e_avgPredictionlabel" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                                    </DockPanel>
+                                    
+                                </StackPanel>
+                            </GroupBox>
+
+
                         </StackPanel>
                     </GroupBox>
 
                     <GroupBox Header="Device items" Grid.Column="1" Margin="2">
                         <StackPanel>
-                            <CheckBox Name="check_devicepos" IsChecked="True" Margin="5" Checked="check_devicepos_Checked" Unchecked="check_devicepos_Checked" >Real device position</CheckBox>
-                            <CheckBox Name="check_simulated_devicepos" IsChecked="True" Margin="5" Checked="check_simulated_devicepos_Checked" Unchecked="check_simulated_devicepos_Checked" >Simulated device position</CheckBox>
+                            <DockPanel>
+                                <CheckBox Name="check_devicepos" IsChecked="True" Margin="5" Checked="check_devicepos_Checked" Unchecked="check_devicepos_Checked" >Real device position</CheckBox>
+                                <Ellipse Name="e_devicepos" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                            </DockPanel>
+                            <DockPanel>
+                                <CheckBox Name="check_simulated_devicepos" IsChecked="True" Margin="5" Checked="check_simulated_devicepos_Checked" Unchecked="check_simulated_devicepos_Checked" >Simulated device position</CheckBox>
+                                <Ellipse Name="e_simulated_devicepos" Fill="Red" Width="15" Height="15" HorizontalAlignment="Right"></Ellipse>
+                            </DockPanel>
                         </StackPanel>
                     </GroupBox>
                 </Grid>
-                
+
             </TabItem>
             <TabItem Header="Simulation data">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
@@ -43,18 +93,28 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    
+
                     <Label Grid.Column="0" Grid.Row="0">Bluetooth tag maximum range:</Label>
-                    <TextBox Name="text_maxrange" Grid.Column="1" Grid.Row="0" Margin="3" Background="AliceBlue"> </TextBox>
-                    <Label Grid.Column="2" Grid.Row="0" ToolTip="meter">(m)</Label>
+                    <TextBox Name="text_maxrange" Grid.Column="1" Grid.Row="0" Margin="3" Background="AliceBlue" TextAlignment="Center">1500</TextBox>
+                    <Label Grid.Column="2" Grid.Row="0" ToolTip="centimeter">(cm)</Label>
 
-                    <Label Grid.Column="0" Grid.Row="1">Discovery period:</Label>
-                    <Label Grid.Column="0" Grid.Row="2">RSSI Variance:</Label>
+                    <Label Grid.Column="0" Grid.Row="1">Random beacon sending interval:</Label>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                        <Label>Min:</Label>
+                        <TextBox Name="text_minbeacon" Width="50" Margin="3" Background="AliceBlue" TextAlignment="Center">1000</TextBox>
+                        <Label>Max:</Label>
+                        <TextBox Name="text_maxbeacon" Width="50" Margin="3" Background="AliceBlue" TextAlignment="Center">2000</TextBox>
+                    </StackPanel>
+                    <Label Grid.Column="2" Grid.Row="1" ToolTip="millisecond">(ms)</Label>
+                    
+                    <Label Grid.Column="0" Grid.Row="2">Averaging interval</Label>
+                    <TextBox Name="text_avginterval" Grid.Column="1" Grid.Row="2" Margin="3" Background="AliceBlue" TextAlignment="Center">20</TextBox>
+                    <Label Grid.Column="2" Grid.Row="2" ToolTip="second">(sec)</Label>
 
+                    <Button Name="btn_save" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="4" Width="100" Click="btn_save_Click">Save</Button>
                 </Grid>
             </TabItem>
             <TabItem Header="Calculation methods"></TabItem>

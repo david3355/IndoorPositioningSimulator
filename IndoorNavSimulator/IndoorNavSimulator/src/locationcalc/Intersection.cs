@@ -77,7 +77,7 @@ namespace IndoorNavSimulator
             StringBuilder stb = new StringBuilder();
             for (int i = 0; i < points.Count; i++)
             {
-                stb.Append(String.Format("[{0};{1}]", points[i].X, points[i].Y));
+                stb.Append(String.Format("[{0};{1}]", Math.Round(points[i].X, 2), Math.Round(points[i].Y, 2)));
                 if (i == 0) stb.Append(" - ");
             }
             return stb.ToString();

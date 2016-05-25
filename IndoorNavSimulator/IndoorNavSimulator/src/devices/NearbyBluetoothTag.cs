@@ -11,7 +11,7 @@ namespace IndoorNavSimulator
     /// Egy, az adott helymeghatározó eszköztől való távolságot reprezentáló objektum
     /// Az Origo a referenciapont (bluetooth tag) helyzete, a DistanceFromTag pedig a távolsága a telefontól
     /// </summary>
-    class NearbyBluetoothTag
+    public class NearbyBluetoothTag
     {
         public NearbyBluetoothTag(Point Origo, String MAC, double DistanceFromTag, BeaconHandler BeaconHandler)
         {
@@ -19,6 +19,7 @@ namespace IndoorNavSimulator
             mac = MAC;
             distanceFromTag = DistanceFromTag;
             sendBeacon = BeaconHandler;
+            lastBeacons = new List<Beacon>();
             rssiMeasureHelper = RssiMeasureHelper.GetInstance;
             beaconThread = new Thread(sendBeacons);
             beaconThread.Start();
@@ -34,6 +35,10 @@ namespace IndoorNavSimulator
         private bool sendingBeacons;
         private int MINSLEEP = 1000;
         private int MAXSLEEP = 3000;
+        private int DIFFERENCE = 20;
+        private List<Beacon> lastBeacons;
+        private int avgRSSI;
+        private double avgPredictedDistance;
 
         private static Random rnd = new Random();
 
@@ -42,9 +47,19 @@ namespace IndoorNavSimulator
             get { return origo; }
         }
 
-        public double DistanceFromTag
+        public double ExactDistanceFromTag
         {
             get { return distanceFromTag; }
+        }
+
+        public double AveragePredictedDistanceFromTag
+        {
+            get { return avgPredictedDistance; }
+        }
+
+        public int AverageRSSI
+        {
+            get { return avgRSSI; }
         }
 
         public String MAC
@@ -52,9 +67,14 @@ namespace IndoorNavSimulator
             get { return mac; }
         }
 
-        public void SetDistance(double NewDistance)
+        public void SetExactDistance(double NewDistance)
         {
             distanceFromTag = NewDistance;
+        }
+
+        public void SetAveragePredictedDistance(double NewAveragePredictedDistance)
+        {
+            avgPredictedDistance = NewAveragePredictedDistance;
         }
 
         public void StopSendingBeacons()
@@ -63,10 +83,35 @@ namespace IndoorNavSimulator
             if (beaconThread.IsAlive) beaconThread.Abort();
         }
 
-        public void SetBeaconSendingPeriodInterval(int Minimum, int Maximum)
+        public void SetBeaconSendingInterval(int Minimum, int Maximum)
         {
             MINSLEEP = Minimum;
             MAXSLEEP = Maximum;
+        }
+
+        public void SetBeaconSendingIntervalMinimum(int Minimum)
+        {
+            MINSLEEP = Minimum;
+        }
+
+        public void SetBeaconSendingIntervalMaximum(int Maximum)
+        {
+            MAXSLEEP = Maximum;
+        }
+
+        public void SetAveragingInterval(int Value)
+        {
+            if (Value >= 0) DIFFERENCE = Value;
+            else throw new ArgumentException("Value must be greater than zero!");
+        }
+
+        /// <summary>
+        /// Az egyik tag távolságából felírható kör tartalmazza-e a másik tag távolsága alapján felírható kört (average predicted distance alapján)
+        /// </summary>
+        public bool Includes(NearbyBluetoothTag tag)
+        {
+            if (this.avgPredictedDistance > LocationCalculator.Distance(this.origo, tag.origo) + tag.avgPredictedDistance) return true;
+            return false;
         }
 
         public override bool Equals(object obj)
@@ -81,10 +126,7 @@ namespace IndoorNavSimulator
             return base.GetHashCode();
         }
 
-        public override string ToString()
-        {
-            return String.Format("{0} ({1} ; {2}) - {3}", Math.Round(distanceFromTag, 4), Math.Round(Origo.X, 2), Math.Round(Origo.Y, 2), mac);
-        }
+        
 
         private void sendBeacons()
         {
@@ -92,8 +134,24 @@ namespace IndoorNavSimulator
             while (sendingBeacons)
             {
                 if (MINSLEEP != 0 || MAXSLEEP != 0) Thread.Sleep(rnd.Next(MINSLEEP, MAXSLEEP));
-                sendBeacon(mac, getRandomRSSIByDistance(), distanceFromTag);
+                Beacon generatedRSSI = new Beacon(getRandomRSSIByDistance(), DateTime.Now);
+                avgRSSI = GetAverageRSSI(generatedRSSI);
+                sendBeacon(this, generatedRSSI.RSSI);
             }
+        }
+
+        private int GetAverageRSSI(Beacon LastRSSI)
+        {
+            DateTime now = DateTime.Now;
+            lastBeacons.RemoveAll(beacon => (now - beacon.Timestamp).TotalSeconds > DIFFERENCE);
+            lastBeacons.Add(LastRSSI);
+            return GetAverageRSSI();
+        }
+
+        private int GetAverageRSSI()
+        {
+            avgRSSI = (int)Math.Round(lastBeacons.Average(beacon => beacon.RSSI));
+            return avgRSSI;
         }
 
         private int getRandomRSSIByDistance()
@@ -105,5 +163,14 @@ namespace IndoorNavSimulator
             else return (int)NormalRandomGenerator.GetNormal(mean, stddev);
         }
 
+        public override string ToString()
+        {
+            StringBuilder stb = new StringBuilder();
+            foreach (Beacon rssi in lastBeacons)
+            {
+                stb.Append(rssi.RSSI + " ");
+            }
+            return String.Format("AvgDist: {6}, ExactDist: {0}, Origo ({1} ; {2}) - {3} > {4}  AvgRSSI: [{5}]", Math.Round(distanceFromTag, 4), Math.Round(Origo.X, 2), Math.Round(Origo.Y, 2), mac, stb.ToString(), avgRSSI, avgPredictedDistance);
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace IndoorNavSimulator
         }
 
         private Simulator simulator;
+        private Options options;
 
         private void Init()
         {
@@ -77,15 +78,16 @@ namespace IndoorNavSimulator
 
         private void sim_settings_Click(object sender, RoutedEventArgs e)
         {
-            Options opt = new Options(simulator);
-            opt.Show();
+            options = new Options(simulator);
+            options.Show();
         }
-       
+
         #endregion
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             simulator.StopAllBeaconSending();
+            if (options != null) options.Close();
         }
 
     }

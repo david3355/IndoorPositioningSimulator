@@ -9,6 +9,8 @@ namespace IndoorNavSimulator
     class InspectTwoIntersectionStrategy : CommonPointStrategy
     {
         /// <summary>
+        /// !!! Ez csak pontos esetben működik !!!
+        /// 
         /// Ez a módszer nem vizsgálja meg, csak az első két metszet pontjait. 
         /// Azon a feltevésen alapszik, hogy minden metszet két pontja közül az egyik közös.
         /// Így elég, ha két metszés megvizsgálunk, és megkeressük a közös pontot.

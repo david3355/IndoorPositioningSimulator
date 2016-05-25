@@ -13,34 +13,38 @@ namespace IndoorNavSimulator
             commonPointStrategy = CommonPointStrategy;
         }
 
-        private CommonPointStrategy commonPointStrategy;
+        protected CommonPointStrategy commonPointStrategy;
 
-        protected override LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation)
+        /// <summary>
+        /// A megadott bluetooth tag-ek távolságaiból visszaadja a k legkisebb távolságú tag-et, vagyis azok tag-eket, amelyek legközelebb vannak az eszközhöz
+        /// </summary>
+        /// <param name="Distances">A közeli bluetooth tag-ek, melyek tárolják az eszköztől számított közelítő távoságot</param>
+        /// <param name="kLeastDistances">Az a k érték amennyi bluetooth tag-et vissza akarunk kapni, melyek a legközelebb vannak az eszköztől</param>
+        /// <returns></returns>
+        protected List<NearbyBluetoothTag> CalculateClosestDistances(List<NearbyBluetoothTag> Distances, int kLeastDistances)
         {
-            // Válasszuk ki a 3 legkisebb távolságot:
+            // Válasszuk ki a k legkisebb távolságot:
             List<NearbyBluetoothTag> distancesCopy = Distances.ToList<NearbyBluetoothTag>();
             List<NearbyBluetoothTag> leastDistances = new List<NearbyBluetoothTag>();
             int mini;
-            for (int k = 0; k < 3; k++)
+            for (int j = 0; j < kLeastDistances; j++)
             {
                 mini = 0;
                 for (int i = 1; i < distancesCopy.Count; i++)
                 {
-                    if (distancesCopy[i].DistanceFromTag < distancesCopy[mini].DistanceFromTag) mini = i;
+                    if (distancesCopy[i].AveragePredictedDistanceFromTag < distancesCopy[mini].AveragePredictedDistanceFromTag) mini = i;
                 }
                 leastDistances.Add(distancesCopy[mini]);
                 distancesCopy.RemoveAt(mini);
             }
+            return leastDistances;
+        }
 
-            List<Intersection> intersectionPoints = new List<Intersection>(); // ebben lesznek két-két kör metszéspontjai
+        protected override LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation)
+        {
+            List<NearbyBluetoothTag> leastDistances = CalculateClosestDistances(Distances, 3);
 
-            NearbyBluetoothTag d0 = leastDistances[0];
-            NearbyBluetoothTag d1 = leastDistances[1];
-            NearbyBluetoothTag d2 = leastDistances[2];
-
-            intersectionPoints.Add(Intersection.CalculateIntersection(d0.Origo, d0.DistanceFromTag, d1.Origo, d1.DistanceFromTag));
-            intersectionPoints.Add(Intersection.CalculateIntersection(d0.Origo, d0.DistanceFromTag, d2.Origo, d2.DistanceFromTag));
-            intersectionPoints.Add(Intersection.CalculateIntersection(d2.Origo, d2.DistanceFromTag, d1.Origo, d1.DistanceFromTag));
+            List<Intersection> intersectionPoints = GetIntersections(leastDistances); // ebben lesznek két-két kör metszéspontjai
 
             return new LocationResult(commonPointStrategy.CommonPointOfIntersections(intersectionPoints), Precision.ThreeOrMoreTag);
         }

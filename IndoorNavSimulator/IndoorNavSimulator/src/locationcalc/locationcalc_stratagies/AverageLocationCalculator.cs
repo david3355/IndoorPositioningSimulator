@@ -11,17 +11,10 @@ namespace IndoorNavSimulator
         protected override LocationResult CalculateCommonPoint(List<NearbyBluetoothTag> Distances, LocationResult LastLocation)
         {
             List<Point> adjacentPoints = new List<Point>(); // ebben lesznek az egyes metszetek legközelebbi pontjai után kiválogatott szomszédos pontok
-            List<Intersection> intersectionPoints = new List<Intersection>(); // ebben lesznek két-két kör metszéspontjai
 
             // kiszámoljuk minden kör, minden másik körhöz mért metszéspontját
-            for (int i = 0; i < Distances.Count; i++)
-            {
-                for (int j = i + 1; j < Distances.Count; j++)
-                {
-                    if (i == j) continue;
-                    intersectionPoints.Add(Intersection.CalculateIntersection(Distances[i].Origo, Distances[i].DistanceFromTag, Distances[j].Origo, Distances[j].DistanceFromTag));
-                }
-            }
+            List<Intersection> intersectionPoints = GetIntersections(Distances); // ebben lesznek két-két kör metszéspontjai
+           
             // eddig jó
             for (int i = 0; i < intersectionPoints.Count; i++)
             {
